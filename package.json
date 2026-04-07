@@ -7,7 +7,7 @@
     "start": "node index.js",
     "predev": "powershell -Command \"Get-NetTCPConnection -LocalPort 8000 -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue }\"",
     "dev": "nodemon index.js",
-    "render-build": "npm install && pip install pandas scikit-learn xgboost numpy joblib"
+    "render-build": "npm install && pip install --no-cache-dir numpy==1.26.4 pandas==2.2.2 scikit-learn==1.4.2 xgboost==2.0.3 joblib==1.4.2"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
