@@ -1,5 +1,5 @@
 const Prediction = require('../models/Prediction');
-const { exec } = require('child_process');
+const { spawn } = require('child_process');
 const path = require('path');
 
 // ═══════════════════════════════════════════════════════════════
@@ -8,7 +8,7 @@ const path = require('path');
 exports.predict = async (req, res) => {
   try {
     const features = req.body;
-    // UPDATED PATH: Expecting ml_models inside backend/ for Render
+    // UPDATED PATH: ml_models is inside backend/
     const scriptPath = path.join(__dirname, '..', 'ml_models', 'inference.py');
 
     // Fetch previous assessment for temporal analysis
@@ -27,30 +27,52 @@ exports.predict = async (req, res) => {
         }
       }
     } catch (e) {
-      // If no previous data, temporal analysis will be null
+      console.log("No previous prediction found or error fetching it.");
     }
 
-    // Build payload with features + previous assessment for temporal intelligence
+    // Build payload
     const mlPayload = { ...features };
     if (previousDiseaseData) {
       mlPayload._previous_assessment = previousDiseaseData;
     }
 
-    const inputJson = JSON.stringify(mlPayload).replace(/"/g, '\\"');
+    const payloadString = JSON.stringify(mlPayload);
 
-    exec(`py "${scriptPath}" "${inputJson}"`, { maxBuffer: 1024 * 1024 * 10 }, async (error, stdout, stderr) => {
-      if (error) {
-        console.error('Python execution error:', error);
-        return res.status(500).json({ detail: 'ML Model Error', error: error.message });
+    // DYNAMIC COMMAND: Windows works best with 'py' (to avoid Microsoft Store alias), Render/Linux needs 'python3'
+    const pythonCommand = process.platform === 'win32' ? 'py' : 'python3';
+    
+    console.log(`🚀 Spawning Python Engine (${pythonCommand}): ${scriptPath}`);
+    const pythonProcess = spawn(pythonCommand, [scriptPath, payloadString]);
+
+    let stdoutData = '';
+    let stderrData = '';
+
+    pythonProcess.stdout.on('data', (data) => {
+      stdoutData += data.toString();
+    });
+
+    pythonProcess.stderr.on('data', (data) => {
+      stderrData += data.toString();
+      console.error(`🔴 Python Error: ${data.toString()}`);
+    });
+
+    pythonProcess.on('close', async (code) => {
+      console.log(`🏁 Python process exited with code ${code}`);
+
+      if (code !== 0) {
+        return res.status(500).json({
+          detail: 'ML Script Failed',
+          error: stderrData || 'Unknown error'
+        });
       }
 
       try {
-        const result = JSON.parse(stdout);
+        const result = JSON.parse(stdoutData);
         if (result.error) throw new Error(result.error);
 
         const { overall_assessment, diseases, trend_analysis, model_comparison, meta } = result;
 
-        // Save structured research-grade data to MongoDB
+        // Save to MongoDB
         const predictionRecord = await Prediction.create({
           userId: req.user._id,
           input_features: features,
@@ -61,33 +83,28 @@ exports.predict = async (req, res) => {
           meta
         });
 
-        // Return rich API response
         res.status(200).json({
           id: predictionRecord._id,
           timestamp: predictionRecord.createdAt,
-          input_features: features,
-          overall_assessment,
-          diseases,
-          trend_analysis,
-          model_comparison,
-          meta
+          ...result
         });
       } catch (parseError) {
         console.error('JSON Parse Error:', parseError.message);
-        console.error('Python stdout:', stdout);
-        console.error('Python stderr:', stderr);
-        res.status(500).json({ detail: 'Error processing ML output', error: parseError.message });
+        console.error('Raw Output:', stdoutData);
+        res.status(500).json({
+          detail: 'Error processing ML output',
+          error: parseError.message,
+          raw: stdoutData
+        });
       }
     });
+
   } catch (err) {
-    console.error(err);
+    console.error('Server Error:', err);
     res.status(500).json({ detail: 'Server Error', error: err.message });
   }
 };
 
-// ═══════════════════════════════════════════════════════════════
-// GET HISTORY — Rich longitudinal data for dashboard + trends
-// ═══════════════════════════════════════════════════════════════
 exports.getHistory = async (req, res) => {
   try {
     const history = await Prediction.find({ userId: req.user._id })
@@ -116,19 +133,17 @@ exports.getHistory = async (req, res) => {
   }
 };
 
-// ═══════════════════════════════════════════════════════════════
-// GET MODEL METRICS — For Research Analytics page
-// ═══════════════════════════════════════════════════════════════
 exports.getModelMetrics = async (req, res) => {
   try {
-    const metricsPath = path.join(__dirname, '..', '..', 'ml_models', 'saved_models', 'metrics.json');
+    // UPDATED PATH: metrics is inside backend/ml_models/saved_models
+    const metricsPath = path.join(__dirname, '..', 'ml_models', 'saved_models', 'metrics.json');
     const fs = require('fs');
 
     if (fs.existsSync(metricsPath)) {
       const metrics = JSON.parse(fs.readFileSync(metricsPath, 'utf-8'));
       res.status(200).json(metrics);
     } else {
-      res.status(404).json({ detail: 'Metrics not found. Train models first.' });
+      res.status(404).json({ detail: 'Metrics not found.' });
     }
   } catch (err) {
     res.status(500).json({ detail: 'Error loading metrics' });
