@@ -1,0 +1,23 @@
+{
+  "name": "multi-disease-node-backend",
+  "version": "1.0.0",
+  "description": "Context-Aware Multi-Disease Detection API",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "predev": "powershell -Command \"Get-NetTCPConnection -LocalPort 8000 -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue }\"",
+    "dev": "nodemon index.js",
+    "render-build": "npm install && pip install pandas scikit-learn xgboost numpy joblib"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^9.4.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}

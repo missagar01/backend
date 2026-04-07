@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int          @id @default(autoincrement())
+  username  String       @unique
+  email     String       @unique
+  password  String
+  role      String       @default("user")
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  predictions Prediction[]
+}
+
+model Prediction {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  
+  // Inputs
+  age                     Float?
+  bmi                     Float?
+  smoke                   Int?
+  alcohol                 Int?
+  physical_activity       Int?
+  diet_quality            Int?
+  sleep_hours             Float?
+  stress_level            Int?
+  work_environment        Int?
+  family_history_diabetes Int?
+  family_history_heart    Int?
+  blood_pressure_systolic Float?
+  blood_pressure_diastolic Float?
+  glucose                 Float?
+  cholesterol             Float?
+  creatinine              Float?
+  alt_liver               Float?
+  
+  // Results
+  diabetes       Int?
+  heart_disease  Int?
+  kidney_disease Int?
+  liver_disease  Int?
+  
+  explanation    String?
+  createdAt      DateTime @default(now())
+}

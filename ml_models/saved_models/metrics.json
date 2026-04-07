@@ -1,0 +1,130 @@
+{
+    "diabetes": {
+        "LogisticRegression": {
+            "Accuracy": 0.8875,
+            "Precision": 0.7659574468085106,
+            "Recall": 0.5142857142857142,
+            "F1-Score": 0.6153846153846154
+        },
+        "RandomForest": {
+            "Accuracy": 0.9025,
+            "Precision": 0.7540983606557377,
+            "Recall": 0.6571428571428571,
+            "F1-Score": 0.7022900763358778
+        },
+        "XGBoost": {
+            "Accuracy": 0.91,
+            "Precision": 0.7575757575757576,
+            "Recall": 0.7142857142857143,
+            "F1-Score": 0.7352941176470589
+        },
+        "KNN": {
+            "Accuracy": 0.89,
+            "Precision": 0.76,
+            "Recall": 0.5428571428571428,
+            "F1-Score": 0.6333333333333333
+        },
+        "Ensemble": {
+            "Accuracy": 0.9125,
+            "Precision": 0.7966101694915254,
+            "Recall": 0.6714285714285714,
+            "F1-Score": 0.7286821705426356
+        }
+    },
+    "heart_disease": {
+        "LogisticRegression": {
+            "Accuracy": 0.91,
+            "Precision": 0.7567567567567568,
+            "Recall": 0.509090909090909,
+            "F1-Score": 0.6086956521739131
+        },
+        "RandomForest": {
+            "Accuracy": 0.895,
+            "Precision": 0.7096774193548387,
+            "Recall": 0.4,
+            "F1-Score": 0.5116279069767442
+        },
+        "XGBoost": {
+            "Accuracy": 0.89,
+            "Precision": 0.6222222222222222,
+            "Recall": 0.509090909090909,
+            "F1-Score": 0.56
+        },
+        "KNN": {
+            "Accuracy": 0.8725,
+            "Precision": 0.5833333333333334,
+            "Recall": 0.2545454545454545,
+            "F1-Score": 0.35443037974683544
+        },
+        "Ensemble": {
+            "Accuracy": 0.905,
+            "Precision": 0.7741935483870968,
+            "Recall": 0.43636363636363634,
+            "F1-Score": 0.5581395348837209
+        }
+    },
+    "kidney_disease": {
+        "LogisticRegression": {
+            "Accuracy": 0.8725,
+            "Precision": 0.7804878048780488,
+            "Recall": 0.43243243243243246,
+            "F1-Score": 0.5565217391304348
+        },
+        "RandomForest": {
+            "Accuracy": 0.9325,
+            "Precision": 0.9122807017543859,
+            "Recall": 0.7027027027027027,
+            "F1-Score": 0.7938931297709924
+        },
+        "XGBoost": {
+            "Accuracy": 0.925,
+            "Precision": 0.8666666666666667,
+            "Recall": 0.7027027027027027,
+            "F1-Score": 0.7761194029850746
+        },
+        "KNN": {
+            "Accuracy": 0.8025,
+            "Precision": 0.3333333333333333,
+            "Recall": 0.06756756756756757,
+            "F1-Score": 0.11235955056179775
+        },
+        "Ensemble": {
+            "Accuracy": 0.92,
+            "Precision": 0.9375,
+            "Recall": 0.6081081081081081,
+            "F1-Score": 0.7377049180327869
+        }
+    },
+    "liver_disease": {
+        "LogisticRegression": {
+            "Accuracy": 0.885,
+            "Precision": 0.7857142857142857,
+            "Recall": 0.6395348837209303,
+            "F1-Score": 0.7051282051282052
+        },
+        "RandomForest": {
+            "Accuracy": 0.925,
+            "Precision": 0.9242424242424242,
+            "Recall": 0.7093023255813954,
+            "F1-Score": 0.8026315789473685
+        },
+        "XGBoost": {
+            "Accuracy": 0.9225,
+            "Precision": 0.8873239436619719,
+            "Recall": 0.7325581395348837,
+            "F1-Score": 0.802547770700637
+        },
+        "KNN": {
+            "Accuracy": 0.82,
+            "Precision": 0.7058823529411765,
+            "Recall": 0.27906976744186046,
+            "F1-Score": 0.4
+        },
+        "Ensemble": {
+            "Accuracy": 0.915,
+            "Precision": 0.90625,
+            "Recall": 0.6744186046511628,
+            "F1-Score": 0.7733333333333333
+        }
+    }
+}
