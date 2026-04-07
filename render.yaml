@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: hybrid-ml-backend
+    env: docker
+    region: ohio
+    plan: free
+    dockerContext: .
+    dockerFilePath: Dockerfile
+    envVars:
+      - key: MONGO_URL
+        fromContext: MONGO_URL
+      - key: SECRET_KEY
+        fromContext: SECRET_KEY
+      - key: PORT
+        value: 8000
